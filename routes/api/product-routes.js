@@ -11,11 +11,39 @@ router.get('/', (req, res) => {
   // find all products
   // be sure to include its associated Category and Tag data
   Product.findAll({
-    attributes: [
-      'id', 'product_name', 'price', 'stock' //,
-      //[sequelize.literal('(SELECT tag_name from producttag where product.id = producttag.product_id'), 'producttag_id']
-    ] 
-    
+    include: [
+        {
+          model: Tag,
+          attributes: ['tag_name'],
+          through: ProductTag,
+          as: 'tagged_product'
+        }
+      ]
+    // include: [
+    //   {
+    //     model: Tag,
+    //     attributes: [ 'tagged_product']
+    //   }
+    // ]
+    // attributes: [
+    //   'id', 'product_name', 'price', 'stock' ,
+    //   [sequelize.literal('(SELECT tag_id from producttag where product.id = producttag.product_id'), 'tagIds']
+    // ]
+      // ], 
+    // include:[
+    //   {
+    //     model: ProductTag,
+    //     attributes: ['id', 'tag_id', 'product_id'],
+    //     include: {
+    //         model: Tag,
+    //         attributes: ['id', 'tag_name']
+    //     }
+    //   },
+    //   {
+    //     model: Tag,
+    //     attributes: ['tag_name']
+    //   }
+    // ]
   })
   .then(dbCategoryData => res.json(dbCategoryData))
   .catch(err => {
@@ -32,6 +60,13 @@ router.get('/:id', (req, res) => {
     where: {
       id: req.params.id
     }
+    // ,
+    // include: [
+    //   {
+    //     model: Tag,
+    //     attributes: ['id', 'tag_name']
+    //   }
+    // ]
   })
   .then(dbCategoryData => res.json(dbCategoryData))
   .catch(err => {

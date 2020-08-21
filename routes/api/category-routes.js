@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Category, Product, Tag } = require('../../models');
+const { Category, Product, Tag, ProductTag } = require('../../models');
 const sequelize = require('../../config/connection');
 //const { Sequelize } = require('sequelize/types');
 
@@ -9,9 +9,15 @@ router.get('/', (req, res) => {
   // find all categories
   // be sure to include its associated Products
   Category.findAll({
-    attributes:[
-      'id', 'category_name' //,
-      //[sequelize.literal('(SELCT product_name from product where category.id = product.category_id)'), 'products']
+    // attributes:[
+    //   'id', 'category_name',
+    // ],
+    include: [
+      {
+        model: Product,
+        attributes: ['id', 'category_id', 'product_name', 'price', 'stock']
+        
+      }
     ]
   })
   .then(dbCategoryData => res.json(dbCategoryData))
