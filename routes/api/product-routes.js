@@ -13,37 +13,16 @@ router.get('/', (req, res) => {
   Product.findAll({
     include: [
         {
+          model: Category,
+          attributes: ['id', 'category_name']
+        },
+        {
           model: Tag,
-          attributes: ['tag_name'],
+          attributes: ['id', 'tag_name'],
           through: ProductTag,
-          as: 'tagged_product'
+          as: 'tags'
         }
       ]
-    // include: [
-    //   {
-    //     model: Tag,
-    //     attributes: [ 'tagged_product']
-    //   }
-    // ]
-    // attributes: [
-    //   'id', 'product_name', 'price', 'stock' ,
-    //   [sequelize.literal('(SELECT tag_id from producttag where product.id = producttag.product_id'), 'tagIds']
-    // ]
-      // ], 
-    // include:[
-    //   {
-    //     model: ProductTag,
-    //     attributes: ['id', 'tag_id', 'product_id'],
-    //     include: {
-    //         model: Tag,
-    //         attributes: ['id', 'tag_name']
-    //     }
-    //   },
-    //   {
-    //     model: Tag,
-    //     attributes: ['tag_name']
-    //   }
-    // ]
   })
   .then(dbCategoryData => res.json(dbCategoryData))
   .catch(err => {
@@ -59,14 +38,19 @@ router.get('/:id', (req, res) => {
   Product.findOne({
     where: {
       id: req.params.id
-    }
-    // ,
-    // include: [
-    //   {
-    //     model: Tag,
-    //     attributes: ['id', 'tag_name']
-    //   }
-    // ]
+    },
+    include: [
+      {
+        model: Category,
+        attributes: ['id', 'category_name']
+      },
+      {
+        model: Tag,
+        attributes: ['id', 'tag_name'],
+        through: ProductTag,
+          as: 'tags'
+      }
+    ]
   })
   .then(dbCategoryData => res.json(dbCategoryData))
   .catch(err => {

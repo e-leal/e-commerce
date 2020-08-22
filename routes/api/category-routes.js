@@ -9,13 +9,10 @@ router.get('/', (req, res) => {
   // find all categories
   // be sure to include its associated Products
   Category.findAll({
-    // attributes:[
-    //   'id', 'category_name',
-    // ],
     include: [
       {
         model: Product,
-        attributes: ['id', 'category_id', 'product_name', 'price', 'stock']
+        attributes: ['id', 'product_name', 'price', 'stock', 'category_id']
         
       }
     ]
@@ -33,15 +30,15 @@ router.get('/:id', (req, res) => {
   Category.findOne({
     where: {
       id: req.params.id
-    }
-    // },
-    // include: [
-    //   {
-    //     model: Product,
-    //     attributes: ['id', 'product_name', 'price', 'stock',
-    //     [sequelize.literal('(SELCT product_name from product where category.id = product.category_id)'), 'products']]
-    //   }
-    // ]
+    },
+    include: [
+      {
+        model: Product,
+        attributes: ['id', 'product_name', 'price', 'stock', 'category_id']
+        
+      }
+    ]
+
   })
   .then(dbCategoryData => {
     if(!dbCategoryData){
